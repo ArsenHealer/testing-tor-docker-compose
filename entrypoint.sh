@@ -1,7 +1,6 @@
-if [[ -z "$*" ]]; then
-    # Если команда не передана, запускаем Tor
-    sudo -u debian-tor tor -f /etc/tor/torrc
+# If a Docker CMD is specify, run it. Else, boot TOR!
+if [[ ! -z "$@" ]]; then
+    exec $@
 else
-    # Если команда передана, выполняем её
-    exec "$@"
+    sudo -u debian-tor tor -f /etc/tor/torrc
 fi
