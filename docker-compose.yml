@@ -11,7 +11,8 @@ services:
     volumes:
       - somevol:/shavol
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.11.139
 
   da2:
     build: .
@@ -24,7 +25,8 @@ services:
     depends_on:
       - da1
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.99.44
 
   da3:
     build: .
@@ -37,7 +39,8 @@ services:
     depends_on:
       - da2
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.179.14
 
   # Реле
   relay1:
@@ -51,7 +54,8 @@ services:
     depends_on:
       - da3
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.188.28
 
   relay2:
     build: .
@@ -64,7 +68,8 @@ services:
     depends_on:
       - relay1
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.88.31
 
   relay3:
     build: .
@@ -77,7 +82,8 @@ services:
     depends_on:
       - relay2
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.137.197
 
   relay4:
     build: .
@@ -90,7 +96,8 @@ services:
     depends_on:
       - relay3
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.229.1
 
   relay5:
     build: .
@@ -103,7 +110,8 @@ services:
     depends_on:
       - relay4
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.104.32
 
   # Выходные узлы
   exit1:
@@ -117,7 +125,8 @@ services:
     depends_on:
       - relay5
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.56.142
 
   exit2:
     build: .
@@ -130,7 +139,8 @@ services:
     depends_on:
       - exit1
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.242.11
 
   exit3:
     build: .
@@ -143,7 +153,8 @@ services:
     depends_on:
       - exit2
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.82.75
 
   # Клиент
   client:
@@ -157,9 +168,10 @@ services:
     depends_on:
       - exit3
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.140.177
 
-  # сервис onion
+  # Сервис onion
   hs:
     build: .
     environment:
@@ -171,7 +183,8 @@ services:
     volumes:
       - somevol:/shavol
     networks:
-      - tor-network
+      tor-network:
+        ipv4_address: 10.5.108.221
 
 networks:
   tor-network:
