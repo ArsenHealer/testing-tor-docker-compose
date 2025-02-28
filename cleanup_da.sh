@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TOR_DIR=/var/lib/tor/.tor
-DIR_AUTHORITIES_FILE=/status/dir-authorities
+DIR_AUTHORITIES_FILE=/shavol/dir-authorities
 
 FINGERPRINT=$(cat ${TOR_DIR}/fingerprint | cut -d " " -f 2)
 

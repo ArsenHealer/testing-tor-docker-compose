@@ -20,57 +20,72 @@ fi
 
 touch $STATUS_AUTHORITIES
 
+function wait_for_all_das {
+    echo "Waiting for all directory authorities to register..."
+
+    while true; do
+        # Подсчет уникальных строк DirAuthority
+        COUNT=$(sort -u ${STATUS_AUTHORITIES} | grep -c "^DirAuthority")
+
+        if [[ $COUNT -ge 3 ]]; then
+            echo "All directory authorities registered!"
+            break
+        fi
+
+        sleep 5  # Ждем 5 секунд перед повторной проверкой
+    done
+}
+
 function bootstrap {
-    # Get the ip address that is attached to the interface linked to the default route
-    echo IP address is ${IP_ADDR}
+    echo "IP address is ${IP_ADDR}"
 
     cp ${TORRC_BASE} ${TORRC}
 
     case $ROLE in
     da)
-        # Nickname is required, Address is kinda required (without it TOR seems to be unable to guess the IP in the testing network)
-        # and ContactInfo is here to silence a warning
         echo "Setting up node as a directory authority"
-        echo Nickname is ${NICK}
-        echo Nickname ${NICK} >>${TORRC}
-        echo Address ${IP_ADDR} >>${TORRC}
+        echo "Nickname is ${NICK}"
+        echo "Nickname ${NICK}" >>${TORRC}
+        echo "Address ${IP_ADDR}" >>${TORRC}
         echo "ContactInfo ${NICK} <${NICK} AT localhost>" >>${TORRC}
         cat ${TORRC_DA} >>${TORRC}
         cd ${KEYS_DIR}
 
-        # The cert needs to be password encrypted, so generating a random string (since there is no reason to know it in this context)
-        # Set cert validity for 12 months
-        echo $(tr -dc A-Za-z0-9 </dev/urandom | head -c 12) | sudo -u debian-tor tor-gencert --create-identity-key -m 12 -a ${IP_ADDR}:80 --passphrase-fd 0
+        echo $(tr -dc A-Za-z0-9 </dev/urandom | head -c 12) | \
+            sudo -u debian-tor tor-gencert --create-identity-key -m 12 -a ${IP_ADDR}:80 --passphrase-fd 0
 
         cd ${TOR_DIR}
-        # This generates the fingerprint files. The --dirauthority is required here because without it tor will fail and say that you
-        # must have DirAuthority statements in your torrc file if TestingTorNetwork is set. The value doesn't matter though.
         sudo -u debian-tor tor --list-fingerprint --dirauthority "placeholder 127.0.0.1:80 0000000000000000000000000000000000000000"
 
         AUTH_CERT_FINGERPRINT=$(grep "fingerprint" ${KEYS_DIR}/authority_certificate | cut -d " " -f 2)
         SERVER_FINGERPRINT=$(cat ${TOR_DIR}/fingerprint | cut -d " " -f 2)
 
-        # Those lines silence some TOR warnings
         touch ${TOR_DIR}/{approved-routers,sr-state}
         chown debian-tor:debian-tor ${TOR_DIR}/{approved-routers,sr-state}
 
-        # The dir-authorities is mounted in all containers of this project. Real DAs are baked in the TOR executable, o to use our own in our
-        # testing network, all torrc files need to have this line (one per DA)
-        echo "DirAuthority ${NICK} orport=9001 no-v2 v3ident=$AUTH_CERT_FINGERPRINT ${IP_ADDR}:80 $SERVER_FINGERPRINT" >>${STATUS_AUTHORITIES}
+        DA_ENTRY="DirAuthority ${NICK} orport=9001 no-v2 v3ident=$AUTH_CERT_FINGERPRINT ${IP_ADDR}:80 $SERVER_FINGERPRINT"
+
+        # Проверяем, есть ли уже такая запись, если нет — добавляем
+        if ! grep -qF "$DA_ENTRY" "$STATUS_AUTHORITIES"; then
+            echo "$DA_ENTRY" >> "$STATUS_AUTHORITIES"
+        fi
+
+        # Ожидание всех DA перед продолжением
+        wait_for_all_das
         ;;
     relay)
         echo "Setting up node as a guard/mid relay"
-        echo Nickname is ${NICK}
-        echo Nickname ${NICK} >>${TORRC}
-        echo Address ${IP_ADDR} >>${TORRC}
+        echo "Nickname is ${NICK}"
+        echo "Nickname ${NICK}" >>${TORRC}
+        echo "Address ${IP_ADDR}" >>${TORRC}
         echo "ContactInfo ${NICK} <${NICK} AT localhost>" >>${TORRC}
         cat ${TORRC_RELAY} >>${TORRC}
         ;;
     exit)
         echo "Setting up node as an exit relay"
-        echo Nickname is ${NICK}
-        echo Nickname ${NICK} >>${TORRC}
-        echo Address ${IP_ADDR} >>${TORRC}
+        echo "Nickname is ${NICK}"
+        echo "Nickname ${NICK}" >>${TORRC}
+        echo "Address ${IP_ADDR}" >>${TORRC}
         echo "ContactInfo ${NICK} <${NICK} AT localhost>" >>${TORRC}
         cat ${TORRC_EXIT} >>${TORRC}
         ;;
@@ -81,16 +96,10 @@ function bootstrap {
     hs)
         echo "Setting up node as a hidden service"
         cat ${TORRC_HS} >>${TORRC}
-        if [[ -z "${HS_PORT}" ]]; then
-            HS_PORT="80"
-        fi
-        if [[ -z "${SERVICE_PORT}" ]]; then
-            SERVICE_PORT="80"
-        fi
-        if [[ -z "${SERVICE_IP}" ]]; then
-            SERVICE_IP="127.0.0.1"
-        fi
-        echo HiddenServicePort ${HS_PORT} ${SERVICE_IP}:${SERVICE_PORT} >>${TORRC}
+        if [[ -z "${HS_PORT}" ]]; then HS_PORT="80"; fi
+        if [[ -z "${SERVICE_PORT}" ]]; then SERVICE_PORT="80"; fi
+        if [[ -z "${SERVICE_IP}" ]]; then SERVICE_IP="127.0.0.1"; fi
+        echo "HiddenServicePort ${HS_PORT} ${SERVICE_IP}:${SERVICE_PORT}" >>${TORRC}
         ;;
     *)
         echo "Unknown node type, exiting"
@@ -98,7 +107,6 @@ function bootstrap {
         ;;
     esac
 
-    # To prevent bootstrap from running more than once
     touch ${BOOTSTRAP_FLAG}
 }
 
@@ -106,14 +114,16 @@ if [ ! -f ${BOOTSTRAP_FLAG} ]; then
     bootstrap
 fi
 
-cat ${STATUS_AUTHORITIES}
-# Add all the DirAuthority statements to torrc (and ensure no duplicate)
-cat ${STATUS_AUTHORITIES} >>${TORRC}
-sort -uo ${TORRC} ${TORRC}
+# Ждем, пока в файле появятся все три DA (если по какой-то причине пропустили)
+wait_for_all_das
 
-# If a Docker CMD is specify, run it. Else, boot TOR!
+# Удаляем дубликаты перед записью в torrc
+sort -u ${STATUS_AUTHORITIES} -o ${STATUS_AUTHORITIES}
+cat ${STATUS_AUTHORITIES} >>${TORRC}
+
+# Запуск TOR или передача управления другому процессу
 if [[ ! -z "$@" ]]; then
-    exec $@
+    exec "$@"
 else
     sudo -u debian-tor tor -f /etc/tor/torrc
 fi
