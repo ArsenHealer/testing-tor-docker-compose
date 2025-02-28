@@ -11,7 +11,7 @@ TORRC_RELAY=/opt/torrc.relay
 TORRC_EXIT=/opt/torrc.exit
 TORRC_CLIENT=/opt/torrc.client
 TORRC_HS=/opt/torrc.hs
-STATUS_AUTHORITIES=/status/dir-authorities
+STATUS_AUTHORITIES=/shavol/dir-authorities
 
 if [[ -z "${ROLE}" ]]; then
     echo "No role defined, did you set the ROLE environment variable properly?"
@@ -54,9 +54,8 @@ function bootstrap {
         touch ${TOR_DIR}/{approved-routers,sr-state}
         chown debian-tor:debian-tor ${TOR_DIR}/{approved-routers,sr-state}
 
-        # The dir-authorities is mounted in all containers of this project. Real DAs are baked in the TOR executable, so to use our own in our
+        # The dir-authorities is mounted in all containers of this project. Real DAs are baked in the TOR executable, o to use our own in our
         # testing network, all torrc files need to have this line (one per DA)
-        echo "DirAuthority ${NICK} orport=9001 no-v2 v3ident=${AUTH_CERT_FINGERPRINT} ${IP_ADDR}:80 ${SERVER_FINGERPRINT}"
         echo "DirAuthority ${NICK} orport=9001 no-v2 v3ident=$AUTH_CERT_FINGERPRINT ${IP_ADDR}:80 $SERVER_FINGERPRINT" >>${STATUS_AUTHORITIES}
         ;;
     relay)

@@ -9,7 +9,7 @@ services:
       - IP_ADDR=10.5.11.139
       - ROLE=da
     volumes:
-      - somevol:/status/dir-authorities
+      - somevol:/shavol
     networks:
       - tor-network
 
@@ -19,6 +19,10 @@ services:
       - NICK=daxunpfymo
       - IP_ADDR=10.5.99.44
       - ROLE=da
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - da1
     networks:
       - tor-network
 
@@ -28,6 +32,10 @@ services:
       - NICK=dahgndngrb
       - IP_ADDR=10.5.179.14
       - ROLE=da
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - da2
     networks:
       - tor-network
 
@@ -38,6 +46,10 @@ services:
       - NICK=relaynzsilcfk
       - IP_ADDR=10.5.188.28
       - ROLE=relay
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - da3
     networks:
       - tor-network
 
@@ -47,6 +59,10 @@ services:
       - NICK=relayhctniqea
       - IP_ADDR=10.5.88.31
       - ROLE=relay
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - relay1
     networks:
       - tor-network
 
@@ -56,6 +72,10 @@ services:
       - NICK=relayphruftoo
       - IP_ADDR=10.5.137.197
       - ROLE=relay
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - relay2
     networks:
       - tor-network
 
@@ -65,6 +85,10 @@ services:
       - NICK=relaypsxaafiq
       - IP_ADDR=10.5.229.1
       - ROLE=relay
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - relay3
     networks:
       - tor-network
 
@@ -74,6 +98,10 @@ services:
       - NICK=relayageofxuu
       - IP_ADDR=10.5.104.32
       - ROLE=relay
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - relay4
     networks:
       - tor-network
 
@@ -84,6 +112,10 @@ services:
       - NICK=exitvbmpegsv
       - IP_ADDR=10.5.56.142
       - ROLE=exit
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - relay5
     networks:
       - tor-network
 
@@ -93,6 +125,10 @@ services:
       - NICK=exitqmrbravr
       - IP_ADDR=10.5.242.11
       - ROLE=exit
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - exit1
     networks:
       - tor-network
 
@@ -102,6 +138,10 @@ services:
       - NICK=exitwhitmyoo
       - IP_ADDR=10.5.82.75
       - ROLE=exit
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - exit2
     networks:
       - tor-network
 
@@ -112,6 +152,10 @@ services:
       - NICK=clientpdca
       - IP_ADDR=10.5.140.177
       - ROLE=client
+    volumes:
+      - somevol:/shavol
+    depends_on:
+      - exit3
     networks:
       - tor-network
 
@@ -122,6 +166,10 @@ services:
       - NICK=hsservice
       - IP_ADDR=10.5.108.221
       - ROLE=hs
+    depends_on:
+      - client
+    volumes:
+      - somevol:/shavol
     networks:
       - tor-network
 
