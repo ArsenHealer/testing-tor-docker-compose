@@ -1,4 +1,3 @@
-get-torrc testing-tor-da-hgndngrb
 Address 10.5.179.14
 AddressDisableIPv6 1
 AssumeReachable 1

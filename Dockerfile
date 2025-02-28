@@ -16,7 +16,6 @@ RUN chmod 2700 /var/lib/tor/.tor/keys/
 
 COPY entrypoint.sh /opt/entrypoint.sh
 COPY cleanup_da.sh /opt/cleanup_da.sh
-COPY torrc.* /opt/
 RUN chmod +x /opt/entrypoint.sh
 RUN chmod +x /opt/cleanup_da.sh
 

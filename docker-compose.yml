@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+  # Управляющие серверы
+  da1:
+    build: .
+    volumes:
+      - ./da1/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.11.139
+
+  da2:
+    build: .
+    volumes:
+      - ./da2/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.99.44
+
+  da3:
+    build: .
+    volumes:
+      - ./da3/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.179.14
+
+  # Реле
+  relay1:
+    build: .
+    volumes:
+      - ./relay1/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.188.28
+
+  relay2:
+    build: .
+    volumes:
+      - ./relay2/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.88.31
+
+  relay3:
+    build: .
+    volumes:
+      - ./relay3/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.137.197
+
+  relay4:
+    build: .
+    volumes:
+      - ./relay4/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.229.1
+
+  relay5:
+    build: .
+    volumes:
+      - ./relay5/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.104.32
+
+  # Выходные узлы
+  exit1:
+    build: .
+    volumes:
+      - ./exit1/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.56.142
+
+  exit2:
+    build: .
+    volumes:
+      - ./exit2/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.242.11
+
+  exit3:
+    build: .
+    volumes:
+      - ./exit3/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.82.75
+
+  # Клиент
+  client:
+    build: .
+    volumes:
+      - ./client/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.140.177
+
+  # сервис onion
+  hs:
+    build: .
+    volumes:
+      - ./hs/torrc:/etc/tor/torrc
+    networks:
+      tor-network:
+        ipv4_address: 10.5.108.221
+
+networks:
+  tor-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
