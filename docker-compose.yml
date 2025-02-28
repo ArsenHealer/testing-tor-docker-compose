@@ -6,6 +6,10 @@ services:
     build: .
     volumes:
       - ./da1/torrc:/etc/tor/torrc
+    environment:
+      - NICK=dauvfnvkeo
+      - IP_ADDR=10.5.11.139
+      - ROLE=da
     networks:
       tor-network:
         ipv4_address: 10.5.11.139
@@ -14,6 +18,10 @@ services:
     build: .
     volumes:
       - ./da2/torrc:/etc/tor/torrc
+    environment:
+      - NICK=daxunpfymo
+      - IP_ADDR=10.5.99.44
+      - ROLE=da
     networks:
       tor-network:
         ipv4_address: 10.5.99.44
@@ -22,6 +30,10 @@ services:
     build: .
     volumes:
       - ./da3/torrc:/etc/tor/torrc
+    environment:
+      - NICK=dahgndngrb
+      - IP_ADDR=10.5.179.14
+      - ROLE=da
     networks:
       tor-network:
         ipv4_address: 10.5.179.14
@@ -31,6 +43,10 @@ services:
     build: .
     volumes:
       - ./relay1/torrc:/etc/tor/torrc
+    environment:
+      - NICK=relaynzsilcfk
+      - IP_ADDR=10.5.188.28
+      - ROLE=relay
     networks:
       tor-network:
         ipv4_address: 10.5.188.28
@@ -39,6 +55,10 @@ services:
     build: .
     volumes:
       - ./relay2/torrc:/etc/tor/torrc
+    environment:
+      - NICK=relayhctniqea
+      - IP_ADDR=10.5.88.31
+      - ROLE=relay
     networks:
       tor-network:
         ipv4_address: 10.5.88.31
@@ -47,6 +67,10 @@ services:
     build: .
     volumes:
       - ./relay3/torrc:/etc/tor/torrc
+    environment:
+      - NICK=relayphruftoo
+      - IP_ADDR=10.5.137.197
+      - ROLE=relay
     networks:
       tor-network:
         ipv4_address: 10.5.137.197
@@ -55,6 +79,10 @@ services:
     build: .
     volumes:
       - ./relay4/torrc:/etc/tor/torrc
+    environment:
+      - NICK=relaypsxaafiq
+      - IP_ADDR=10.5.229.1
+      - ROLE=relay
     networks:
       tor-network:
         ipv4_address: 10.5.229.1
@@ -63,6 +91,10 @@ services:
     build: .
     volumes:
       - ./relay5/torrc:/etc/tor/torrc
+    environment:
+      - NICK=relayageofxuu
+      - IP_ADDR=10.5.104.32
+      - ROLE=relay
     networks:
       tor-network:
         ipv4_address: 10.5.104.32
@@ -72,6 +104,10 @@ services:
     build: .
     volumes:
       - ./exit1/torrc:/etc/tor/torrc
+    environment:
+      - NICK=exitvbmpegsv
+      - IP_ADDR=10.5.56.142
+      - ROLE=exit
     networks:
       tor-network:
         ipv4_address: 10.5.56.142
@@ -80,6 +116,10 @@ services:
     build: .
     volumes:
       - ./exit2/torrc:/etc/tor/torrc
+    environment:
+      - NICK=exitqmrbravr
+      - IP_ADDR=10.5.242.11
+      - ROLE=exit
     networks:
       tor-network:
         ipv4_address: 10.5.242.11
@@ -88,6 +128,10 @@ services:
     build: .
     volumes:
       - ./exit3/torrc:/etc/tor/torrc
+    environment:
+      - NICK=exitwhitmyoo
+      - IP_ADDR=10.5.82.75
+      - ROLE=exit
     networks:
       tor-network:
         ipv4_address: 10.5.82.75
@@ -97,6 +141,10 @@ services:
     build: .
     volumes:
       - ./client/torrc:/etc/tor/torrc
+    environment:
+      - NICK=clientpdca
+      - IP_ADDR=10.5.140.177
+      - ROLE=client
     networks:
       tor-network:
         ipv4_address: 10.5.140.177
@@ -106,6 +154,10 @@ services:
     build: .
     volumes:
       - ./hs/torrc:/etc/tor/torrc
+    environment:
+      - NICK=hsservice
+      - IP_ADDR=10.5.108.221
+      - ROLE=hs
     networks:
       tor-network:
         ipv4_address: 10.5.108.221
