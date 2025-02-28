@@ -18,9 +18,10 @@ if [[ -z "${ROLE}" ]]; then
     exit 1
 fi
 
+touch $STATUS_AUTHORITIES
+
 function bootstrap {
     # Get the ip address that is attached to the interface linked to the default route
-    IP_ADDR=$(ip route get 1.1.1.1 | head -n 1 | cut -d " " -f 7)
     echo IP address is ${IP_ADDR}
 
     cp ${TORRC_BASE} ${TORRC}
@@ -55,6 +56,7 @@ function bootstrap {
 
         # The dir-authorities is mounted in all containers of this project. Real DAs are baked in the TOR executable, so to use our own in our
         # testing network, all torrc files need to have this line (one per DA)
+        echo "DirAuthority ${NICK} orport=9001 no-v2 v3ident=${AUTH_CERT_FINGERPRINT} ${IP_ADDR}:80 ${SERVER_FINGERPRINT}"
         echo "DirAuthority ${NICK} orport=9001 no-v2 v3ident=$AUTH_CERT_FINGERPRINT ${IP_ADDR}:80 $SERVER_FINGERPRINT" >>${STATUS_AUTHORITIES}
         ;;
     relay)
@@ -105,6 +107,7 @@ if [ ! -f ${BOOTSTRAP_FLAG} ]; then
     bootstrap
 fi
 
+cat ${STATUS_AUTHORITIES}
 # Add all the DirAuthority statements to torrc (and ensure no duplicate)
 cat ${STATUS_AUTHORITIES} >>${TORRC}
 sort -uo ${TORRC} ${TORRC}
