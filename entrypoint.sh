@@ -1,4 +1,3 @@
-
 # If a Docker CMD is specify, run it. Else, boot TOR!
 if [[ ! -z "$@" ]]; then
     exec $@
