@@ -156,7 +156,6 @@ services:
       tor-network:
         ipv4_address: 10.5.82.75
 
-  # Клиент
   client:
     build: .
     environment:
@@ -171,13 +170,15 @@ services:
       tor-network:
         ipv4_address: 10.5.140.177
 
-  # Сервис onion
   hs:
     build: .
     environment:
       - NICK=hsservice
       - IP_ADDR=10.5.108.221
       - ROLE=hs
+      - HS_PORT=8070
+      - SERVICE_IP=10.5.8.23
+      - SERVICE_PORT=5000
     depends_on:
       - client
     volumes:
@@ -185,6 +186,17 @@ services:
     networks:
       tor-network:
         ipv4_address: 10.5.108.221
+  
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro 
+    ports:
+      - "8070:8070"
+    networks:
+      - tor-network
+    depends_on:
+      - hs
 
 networks:
   tor-network:

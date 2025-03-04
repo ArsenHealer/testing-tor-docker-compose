@@ -103,7 +103,6 @@ function bootstrap {
         ;;
     *)
         echo "Unknown node type, exiting"
-        exit 1
         ;;
     esac
 
