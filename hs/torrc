@@ -1,8 +1,0 @@
-AddressDisableIPv6 1
-AssumeReachable 1
-ControlPort 9051
-CookieAuthentication 1
-HiddenServiceDir /var/lib/tor/.tor/hs/
-HiddenServicePort 8070 10.5.8.23:5000
-SocksPort 0
-TestingTorNetwork 1
