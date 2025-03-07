@@ -1,0 +1,6 @@
+# Set the location of the HS files
+HiddenServiceDir /var/lib/tor/.tor/hs/
+HiddenServiceVersion 3
+
+# Disable the client port
+SocksPort 0

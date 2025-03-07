@@ -10,7 +10,7 @@ TORRC_DA=/opt/torrc.da
 TORRC_RELAY=/opt/torrc.relay
 TORRC_EXIT=/opt/torrc.exit
 TORRC_CLIENT=/opt/torrc.client
-TORRC_HS=/opt/torrc.hs
+TORRC_HS=/opt/torrc.hidden
 STATUS_AUTHORITIES=/shavol/dir-authorities
 
 if [[ -z "${ROLE}" ]]; then
