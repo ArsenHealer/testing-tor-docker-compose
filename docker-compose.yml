@@ -164,7 +164,7 @@ services:
       - SERVICE_IP=10.5.8.23
       - SERVICE_PORT=5000
     depends_on:
-      - client
+      - exit3
     volumes:
       - somevol:/shavol
     networks:
