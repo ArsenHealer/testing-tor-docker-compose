@@ -3,7 +3,7 @@ services:
   da1:
     build: .
     environment:
-      - NICK=dauvfnvkeo
+      - NICK=da1
       - IP_ADDR=10.5.11.139
       - ROLE=da
     volumes:
@@ -15,7 +15,7 @@ services:
   da2:
     build: .
     environment:
-      - NICK=daxunpfymo
+      - NICK=da2
       - IP_ADDR=10.5.99.44
       - ROLE=da
     volumes:
@@ -29,7 +29,7 @@ services:
   da3:
     build: .
     environment:
-      - NICK=dahgndngrb
+      - NICK=da3
       - IP_ADDR=10.5.179.14
       - ROLE=da
     volumes:
@@ -44,7 +44,7 @@ services:
   relay1:
     build: .
     environment:
-      - NICK=relaynzsilcfk
+      - NICK=relay1
       - IP_ADDR=10.5.188.28
       - ROLE=relay
     volumes:
@@ -58,7 +58,7 @@ services:
   relay2:
     build: .
     environment:
-      - NICK=relayhctniqea
+      - NICK=relay2
       - IP_ADDR=10.5.88.31
       - ROLE=relay
     volumes:
@@ -72,7 +72,7 @@ services:
   relay3:
     build: .
     environment:
-      - NICK=relayphruftoo
+      - NICK=relay3
       - IP_ADDR=10.5.137.197
       - ROLE=relay
     volumes:
@@ -86,7 +86,7 @@ services:
   relay4:
     build: .
     environment:
-      - NICK=relaypsxaafiq
+      - NICK=relay4
       - IP_ADDR=10.5.229.1
       - ROLE=relay
     volumes:
@@ -100,7 +100,7 @@ services:
   relay5:
     build: .
     environment:
-      - NICK=relayageofxuu
+      - NICK=relay5
       - IP_ADDR=10.5.104.32
       - ROLE=relay
     volumes:
@@ -115,7 +115,7 @@ services:
   exit1:
     build: .
     environment:
-      - NICK=exitvbmpegsv
+      - NICK=exit1
       - IP_ADDR=10.5.56.142
       - ROLE=exit
     volumes:
@@ -129,7 +129,7 @@ services:
   exit2:
     build: .
     environment:
-      - NICK=exitqmrbravr
+      - NICK=exit2
       - IP_ADDR=10.5.242.11
       - ROLE=exit
     volumes:
@@ -143,7 +143,7 @@ services:
   exit3:
     build: .
     environment:
-      - NICK=exitwhitmyoo
+      - NICK=exit3
       - IP_ADDR=10.5.82.75
       - ROLE=exit
     volumes:
@@ -153,20 +153,6 @@ services:
     networks:
       tor-network:
         ipv4_address: 10.5.82.75
-
-  client:
-    build: .
-    environment:
-      - NICK=clientpdca
-      - IP_ADDR=10.5.140.177
-      - ROLE=client
-    volumes:
-      - somevol:/shavol
-    depends_on:
-      - exit3
-    networks:
-      tor-network:
-        ipv4_address: 10.5.140.177
 
   hs:
     build: .
@@ -184,6 +170,20 @@ services:
     networks:
       tor-network:
         ipv4_address: 10.5.108.221
+    
+  openvpn:
+    cap_add:
+     - NET_ADMIN
+    image: kylemanna/openvpn
+    container_name: openvpn
+    ports:
+     - "1194:1194/udp"
+    restart: always
+    volumes:
+     - ./openvpn-data/conf:/etc/openvpn
+    networks:
+      tor-network:
+        ipv4_address: 10.5.250.10
 
 networks:
   tor-network:
@@ -194,3 +194,4 @@ networks:
 
 volumes:
   somevol:
+  ovpn-data:
